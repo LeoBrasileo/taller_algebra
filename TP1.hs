@@ -12,9 +12,11 @@ esPrimo n | n <= 1 = error "No se puede clacular primos de n menor que 1"
           | otherwise = False 
 
 ultimoPrimoAnterior :: Int -> Int 
---ultimoPrimoAnterior 1 = 1
 ultimoPrimoAnterior n | esPrimo n = n
                       | otherwise = ultimoPrimoAnterior (n - 1)
+ultimoPrimoSiguiente :: Int -> Int 
+ultimoPrimoSiguiente n | esPrimo n = n
+                       | otherwise = ultimoPrimoSiguiente (n + 1)
 
 esPar :: Int -> Bool
 esPar n = n `mod` 2 == 0
@@ -34,6 +36,12 @@ esSumaDePrimos n k | esSumaDePrimosParaEsePrimo n k = True
                    | otherwise = esSumaDePrimos n ultPrimo
                    where (ultPrimo) = (ultimoPrimoAnterior(k))
 
+esSumaDePrimosInt :: Int -> Int -> Int
+esSumaDePrimosInt n 1 = 0 
+esSumaDePrimosInt n k | esSumaDePrimosParaEsePrimo n k = k 
+                      | otherwise = esSumaDePrimosInt n ultPrimo
+                      where (ultPrimo) = (ultimoPrimoAnterior(k))
+
 satisfaceGoldbach :: Integer -> Bool
 satisfaceGoldbach n = nEsParYMayor nInt && esSumaDePrimos nInt (ultimoPrimoAnterior(nInt-2))
                     where (nInt) = fromInteger n
@@ -42,3 +50,15 @@ verificarConjeturaHasta :: Integer -> Bool
 verificarConjeturaHasta 4 = True
 verificarConjeturaHasta n | satisfaceGoldbach(n) == False = False
                           | otherwise = verificarConjeturaHasta (n - 2)
+
+descomposicionEnPrimos :: Integer -> (Integer, Integer)
+descomposicionEnPrimos n | satisfaceGoldbach n = (toInteger primoSumante, toInteger (n- toInteger primoSumante))
+                         | otherwise = error "El numero no cumple con las condiciones de la conjetura"
+                        where (nInt, ultPrimo, primoSumante) = (fromInteger n, ultimoPrimoAnterior(nInt-2), esSumaDePrimosInt nInt ultPrimo)
+
+--Esta funcion me dice la cantidad de primos que hay desde k hasta n
+cantidadPrimos :: Int -> Int -> Int -> Int  
+cantidadPrimos n k i | n <= k = i
+                     | otherwise = cantidadPrimos n sigPrimo i+1
+                    where (sigPrimo) = (ultimoPrimoSiguiente (k+1))
+

@@ -36,11 +36,16 @@ esSumaDePrimos n k | esSumaDePrimosParaEsePrimo n k = True
                    | otherwise = esSumaDePrimos n ultPrimo
                    where (ultPrimo) = (ultimoPrimoAnterior(k))
 
+-- devuelve el ultimo primo evaluado
 esSumaDePrimosInt :: Int -> Int -> Int
 esSumaDePrimosInt n 1 = 0 
 esSumaDePrimosInt n k | esSumaDePrimosParaEsePrimo n k = k 
                       | otherwise = esSumaDePrimosInt n ultPrimo
                       where (ultPrimo) = (ultimoPrimoAnterior(k))
+
+primosSumanPar :: Int -> Int -> Bool
+primosSumanPar n k = esPrimo(n) && esPrimo(k) && nEsParYMayor(suma)
+                   where (suma) = (n+k)
 
 satisfaceGoldbach :: Integer -> Bool
 satisfaceGoldbach n = nEsParYMayor nInt && esSumaDePrimos nInt (ultimoPrimoAnterior(nInt-2))
@@ -62,3 +67,23 @@ cantidadPrimos n k i | n <= k = i
                      | otherwise = cantidadPrimos n sigPrimo i+1
                     where (sigPrimo) = (ultimoPrimoSiguiente (k+1))
 
+--Aca hay 2 casos bases que son cuano k ya es el último primo
+--Si n y k cumplen la suma de Goldbach se vuelve a llamar a la funcion y se le suma 1 a la respuesta
+esSumaDePrimosCount :: Int -> Int -> Int
+esSumaDePrimosCount n 1 = 0
+esSumaDePrimosCount n k | esSumaDePrimosParaEsePrimo n k && k > 2 = 1 + esSumaDePrimosCount n ultPrimo
+                        | esSumaDePrimosParaEsePrimo n k && k < 2 = 1
+                        | esSumaDePrimosParaEsePrimo n k == False && k <= 2 = 0
+                        | otherwise = esSumaDePrimosCount n ultPrimo
+                    where (ultPrimo) = (ultimoPrimoAnterior(k-1))
+
+parQueAnteriorEsPrimo :: Int -> Bool 
+parQueAnteriorEsPrimo n = ultimoPrimoAnterior n == n-1
+
+numeroDeDescompsiciones :: Integer -> Integer
+numeroDeDescompsiciones 4 = 2
+numeroDeDescompsiciones 6 = 2
+numeroDeDescompsiciones n | satisfaceGoldbach(n) == False = error "El numero no cumple con las condiciones de la conjetura"
+                          | parQueAnteriorEsPrimo(nInt) = toInteger (esSumaDePrimosCount nInt (ultimoPrimoAnterior (nInt-2)))
+                          | otherwise = toInteger (esSumaDePrimosCount nInt antPrimo)
+                          where (nInt, antPrimo) = (fromInteger n, ultimoPrimoAnterior nInt)

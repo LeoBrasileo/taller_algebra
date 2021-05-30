@@ -80,10 +80,9 @@ esSumaDePrimosCount n k | esSumaDePrimosParaEsePrimo n k && k > 2 = 1 + esSumaDe
 parQueAnteriorEsPrimo :: Int -> Bool 
 parQueAnteriorEsPrimo n = ultimoPrimoAnterior n == n-1
 
-numeroDeDescompsiciones :: Integer -> Integer
-numeroDeDescompsiciones 4 = 2
-numeroDeDescompsiciones 6 = 2
-numeroDeDescompsiciones n | satisfaceGoldbach(n) == False = error "El numero no cumple con las condiciones de la conjetura"
-                          | parQueAnteriorEsPrimo(nInt) = toInteger (esSumaDePrimosCount nInt (ultimoPrimoAnterior (nInt-2)))
-                          | otherwise = toInteger (esSumaDePrimosCount nInt antPrimo)
+numeroDeDescomposiciones :: Integer -> Integer
+numeroDeDescomposiciones 4 = 1
+numeroDeDescomposiciones n | satisfaceGoldbach(n) == False = error "El numero no cumple con las condiciones de la conjetura"
+                           | parQueAnteriorEsPrimo(nInt) = toInteger (esSumaDePrimosCount nInt (ultimoPrimoAnterior (nInt-2)))
+                           | otherwise = toInteger (esSumaDePrimosCount nInt antPrimo)
                           where (nInt, antPrimo) = (fromInteger n, ultimoPrimoAnterior nInt)
